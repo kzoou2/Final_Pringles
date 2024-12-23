@@ -30,27 +30,27 @@ jobs:
         uses: actions/cache@v3
         with:
           # 캐싱할 경로를 front 폴더 내부로 제한
-          path: front/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('front/package-lock.json') }}
+          path: Front/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('Front/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       # Dependencies 설치 (front 폴더 내부에서 실행)
       - name: Install dependencies
-        working-directory: front
+        working-directory: Front
         run: npm ci
         if: steps.cache.outputs.cache-hit != 'true'
 
       # PUBLIC_URL 설정
       - name: Set PUBLIC_URL
-        working-directory: front
+        working-directory: Front
         run: |
           PUBLIC_URL=$(echo $GITHUB_REPOSITORY | sed -r 's/^.+\/(.+)$/\/\1\//')
           echo PUBLIC_URL=$PUBLIC_URL > .env
 
       # 빌드 수행
       - name: Build
-        working-directory: front
+        working-directory: Front
         run: |
           npm run build
           cp ./build/index.html ./build/404.html
@@ -62,4 +62,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: front/build
+          publish_dir: Front/build
